@@ -10,7 +10,8 @@ import {
   Play,
   XCircle,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  Wrench
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -151,6 +152,26 @@ export const TicketDetailPanel = ({
                     )}
                   </p>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recommended Actions */}
+          {ticket.actions && ticket.actions.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Wrench className="h-4 w-4 text-primary" />
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Recommended Actions</p>
+              </div>
+              <div className="p-3 rounded-lg bg-background/50 border border-border">
+                <ul className="space-y-2">
+                  {ticket.actions.map((action, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground leading-relaxed">
+                      <span className="text-primary font-medium mt-0.5">•</span>
+                      <span>{action}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           )}
