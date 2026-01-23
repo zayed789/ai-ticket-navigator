@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, Mail, MessageCircle, Globe, Monitor, Plus } from 'lucide-react';
+import { Send, Mail, MessageCircle, Globe, Monitor, Plus, CheckCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,8 +29,19 @@ interface WebhookPayload {
   submitted_at: string;
 }
 
+interface WebhookResponse {
+  ticket: {
+    ticket_id: string;
+    category?: string;
+    status?: string;
+    source?: string;
+    ticket_text?: string;
+  };
+}
+
 interface TicketSubmissionFormProps {
   onSubmit: (description: string, source: string, metadata?: Record<string, unknown>) => Promise<unknown>;
+  onTicketCreated?: (ticketData: WebhookResponse['ticket']) => void;
 }
 
 interface ChatMessage {
@@ -47,9 +58,10 @@ const sources: { value: TicketSource; label: string; icon: React.ElementType }[]
   { value: 'IT Portal', label: 'IT Portal', icon: Monitor },
 ];
 
-export const TicketSubmissionForm = ({ onSubmit }: TicketSubmissionFormProps) => {
+export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmissionFormProps) => {
   const [source, setSource] = useState<TicketSource>('Web Form');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedTicket, setSubmittedTicket] = useState<WebhookResponse['ticket'] | null>(null);
 
   // Email fields
   const [emailFrom, setEmailFrom] = useState('');
@@ -205,12 +217,19 @@ export const TicketSubmissionForm = ({ onSubmit }: TicketSubmissionFormProps) =>
         throw new Error(`Webhook returned ${response.status}`);
       }
 
-      // Also call local onSubmit for UI update
-      await onSubmit(payload.ticket_text, source, payload.metadata);
+      const data: WebhookResponse = await response.json();
+      
+      // Set the submitted ticket for confirmation display
+      setSubmittedTicket(data.ticket);
+      
+      // Notify parent about the new ticket
+      if (onTicketCreated && data.ticket) {
+        onTicketCreated(data.ticket);
+      }
       
       toast({
         title: 'Ticket Submitted Successfully',
-        description: `Your ${source} ticket has been sent to the processing queue.`,
+        description: `Your ${source} ticket has been created.`,
       });
       
       resetAllFields();
@@ -226,7 +245,66 @@ export const TicketSubmissionForm = ({ onSubmit }: TicketSubmissionFormProps) =>
     }
   };
 
+  const handleNewTicket = () => {
+    setSubmittedTicket(null);
+  };
+
   const SourceIcon = sources.find(s => s.value === source)?.icon || Globe;
+
+  // Confirmation Screen
+  if (submittedTicket) {
+    return (
+      <div className="rounded-xl border border-border bg-card p-6">
+        <div className="flex flex-col items-center text-center space-y-6">
+          {/* Success Icon */}
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+            <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+          </div>
+          
+          {/* Success Message */}
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold text-foreground">Ticket Created Successfully</h3>
+            <p className="text-sm text-muted-foreground">Your support request has been submitted and is being processed.</p>
+          </div>
+          
+          {/* Ticket Details Card */}
+          <div className="w-full max-w-md rounded-lg border border-border bg-background p-4 text-left space-y-3">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <span className="text-sm font-medium text-muted-foreground">Ticket ID</span>
+              <span className="font-mono text-sm font-semibold text-foreground">{submittedTicket.ticket_id || ''}</span>
+            </div>
+            
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <span className="text-sm font-medium text-muted-foreground">Category</span>
+              <span className="text-sm text-foreground">{submittedTicket.category || ''}</span>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">Status</span>
+              <span className={cn(
+                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+                submittedTicket.status === 'Open' 
+                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                  : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+              )}>
+                {submittedTicket.status || ''}
+              </span>
+            </div>
+          </div>
+          
+          {/* Action Button */}
+          <Button 
+            onClick={handleNewTicket}
+            variant="outline"
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Submit Another Ticket
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-border bg-card p-6">

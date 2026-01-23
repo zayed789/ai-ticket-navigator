@@ -127,6 +127,34 @@ export const useTickets = () => {
     return newTicket;
   }, [tickets.length, toast]);
 
+  const addTicketFromWebhook = useCallback((ticketData: {
+    ticket_id: string;
+    category?: string;
+    status?: string;
+    source?: string;
+    ticket_text?: string;
+  }) => {
+    const newTicket: Ticket = {
+      id: ticketData.ticket_id,
+      description: ticketData.ticket_text || '',
+      source: (ticketData.source as Ticket['source']) || 'Web Form',
+      status: (ticketData.status as TicketStatus) || 'Open',
+      urgency: 'Normal',
+      category: (ticketData.category as Ticket['category']) || 'Software Bug',
+      assignedTeam: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      aiExplanation: '',
+      aiConfidenceScore: 0,
+      routingDecision: '',
+      feedbackProvided: false,
+      feedbackCorrect: undefined,
+    };
+
+    setTickets(prev => [newTicket, ...prev]);
+    console.log(`[Webhook] Ticket added from response: ${newTicket.id}`);
+  }, []);
+
   const provideFeedback = useCallback((ticketId: string, isCorrect: boolean) => {
     setTickets(prev => prev.map(ticket => {
       if (ticket.id === ticketId) {
@@ -154,6 +182,7 @@ export const useTickets = () => {
     setSelectedTicketId,
     updateTicketStatus,
     submitTicket,
+    addTicketFromWebhook,
     provideFeedback,
   };
 };

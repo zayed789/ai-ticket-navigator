@@ -20,6 +20,7 @@ const Dashboard = () => {
     setSelectedTicketId,
     updateTicketStatus,
     submitTicket,
+    addTicketFromWebhook,
     provideFeedback,
   } = useTickets();
 
@@ -76,7 +77,7 @@ const Dashboard = () => {
                 Describe your issue and our AI will automatically categorize and route it
               </p>
             </div>
-            <TicketSubmissionForm onSubmit={submitTicket} />
+            <TicketSubmissionForm onSubmit={submitTicket} onTicketCreated={addTicketFromWebhook} />
           </section>
         )}
       </main>
