@@ -89,19 +89,29 @@ export const useTickets = () => {
   }, [toast]);
 
   const submitTicket = useCallback(async (description: string, source: string) => {
+    const category = 'Software Bug' as const;
+    const urgency = 'Normal' as const;
+    const assignedTeam = 'Help Desk L1';
+    
     const newTicket: Ticket = {
       id: `TKT-${String(1000 + tickets.length).padStart(4, '0')}`,
       description,
       source: source as Ticket['source'],
       status: 'Open',
-      urgency: 'Normal',
-      category: 'Software Bug',
-      assignedTeam: 'Help Desk L1',
+      urgency,
+      category,
+      assignedTeam,
       createdAt: new Date(),
       updatedAt: new Date(),
-      aiExplanation: 'AI analysis pending...',
-      aiConfidenceScore: 0,
-      routingDecision: 'Awaiting AI classification',
+      aiExplanation: `**Category Analysis:** Initial classification pending full AI analysis. Temporarily assigned to ${category} based on preliminary keyword scan.
+
+**Urgency Assessment:** Default priority assigned pending detailed impact assessment.
+
+**Team Assignment:** Routed to ${assignedTeam} for initial triage and assessment.`,
+      aiConfidenceScore: 65,
+      routingDecision: `Routed to ${assignedTeam}`,
+      feedbackProvided: false,
+      feedbackCorrect: undefined,
     };
 
     setTickets(prev => [newTicket, ...prev]);

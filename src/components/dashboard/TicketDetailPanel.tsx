@@ -97,54 +97,80 @@ export const TicketDetailPanel = ({
 
         <Separator className="bg-border" />
 
-        {/* AI Decision Section */}
-        <div className="space-y-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
-          <div className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-primary">AI Analysis</h3>
-            <Badge variant="outline" className="ml-auto border-primary/30 bg-primary/10 text-primary">
+        {/* AI Analysis Section - Clearly Separated Card */}
+        <div className="space-y-4 rounded-xl border-2 border-primary/40 bg-primary/5 p-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold text-primary">AI Analysis</h3>
+            </div>
+            <Badge variant="outline" className="border-primary/30 bg-primary/10 text-primary font-semibold">
               {ticket.aiConfidenceScore}% Confidence
             </Badge>
           </div>
           
-          <div className="space-y-3">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Routing Decision</p>
-              <p className="text-sm">{ticket.routingDecision}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Explanation</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{ticket.aiExplanation}</p>
+          <Separator className="bg-primary/20" />
+          
+          {/* Routing Decision */}
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Routing Decision</p>
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-background/50 border border-border">
+              <User className="h-4 w-4 text-primary" />
+              <span className="font-medium">{ticket.routingDecision}</span>
             </div>
           </div>
 
-          {/* AI Feedback */}
-          <div className="flex items-center gap-3 pt-2 border-t border-primary/20">
-            <span className="text-sm text-muted-foreground">Was this decision correct?</span>
+          {/* AI Explanation */}
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">AI Explanation</p>
+            <div className="p-3 rounded-lg bg-background/50 border border-border space-y-2">
+              {ticket.aiExplanation.split('\n\n').map((paragraph, idx) => (
+                <p key={idx} className="text-sm text-muted-foreground leading-relaxed">
+                  {paragraph.split('**').map((part, i) => 
+                    i % 2 === 1 ? <strong key={i} className="text-foreground">{part}</strong> : part
+                  )}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <Separator className="bg-primary/20" />
+
+          {/* AI Feedback Section */}
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Feedback</p>
             {ticket.feedbackProvided ? (
-              <Badge variant="outline" className={cn(
-                'font-medium',
-                ticket.feedbackCorrect ? 'border-success/30 bg-success/10 text-success' : 'border-destructive/30 bg-destructive/10 text-destructive'
-              )}>
-                {ticket.feedbackCorrect ? 'Marked Correct' : 'Marked Incorrect'}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className={cn(
+                  'font-medium px-3 py-1',
+                  ticket.feedbackCorrect 
+                    ? 'border-success/30 bg-success/10 text-success' 
+                    : 'border-destructive/30 bg-destructive/10 text-destructive'
+                )}>
+                  {ticket.feedbackCorrect ? (
+                    <><ThumbsUp className="h-3 w-3 mr-1.5" /> Decision was correct</>
+                  ) : (
+                    <><ThumbsDown className="h-3 w-3 mr-1.5" /> Decision was incorrect</>
+                  )}
+                </Badge>
+              </div>
             ) : (
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  className="border-success/30 hover:bg-success/10 text-success"
+                  className="border-success/30 hover:bg-success/10 text-success flex-1"
                   onClick={() => onFeedback(ticket.id, true)}
                 >
-                  <ThumbsUp className="h-3 w-3 mr-1" /> Yes
+                  <ThumbsUp className="h-3.5 w-3.5 mr-2" /> Yes, decision was correct
                 </Button>
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  className="border-destructive/30 hover:bg-destructive/10 text-destructive"
+                  className="border-destructive/30 hover:bg-destructive/10 text-destructive flex-1"
                   onClick={() => onFeedback(ticket.id, false)}
                 >
-                  <ThumbsDown className="h-3 w-3 mr-1" /> No
+                  <ThumbsDown className="h-3.5 w-3.5 mr-2" /> No, decision was incorrect
                 </Button>
               </div>
             )}

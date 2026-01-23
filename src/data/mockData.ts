@@ -57,18 +57,44 @@ const descriptions = [
   'Server showing high CPU usage, causing service degradation.',
 ];
 
-const aiExplanations = [
-  'Based on keyword analysis, this ticket mentions "VPN" and "timeout" which strongly indicates a network connectivity issue. The urgency is elevated due to remote work impact.',
-  'The mention of "crashing" and "attachments" suggests a software compatibility issue. Assigned to Application Support for memory-related debugging.',
-  'Post-update access issues are typically permission-related. Routing to Help Desk L2 for domain policy verification.',
-  'New employee access requests are standard onboarding tasks. Low urgency assigned due to non-blocking nature.',
-  'Hardware symptoms detected: "flickering" and "docked" suggest display adapter or docking station issues. Hardware team assigned.',
-  'Performance degradation affecting customers triggers high urgency. Infrastructure team alerted for immediate investigation.',
-  'Security keywords detected. Elevated to Security Team with urgent priority per incident response protocol.',
-  'Standard hardware issue detected. Assigned to Help Desk L1 for initial troubleshooting.',
-  'Password reset with portal failure requires L2 escalation for backend account verification.',
-  'Database performance issues during peak hours suggest capacity or query optimization needs.',
-];
+// AI explanation generator that references the actual assigned team
+const generateAiExplanation = (category: IssueCategory, urgency: UrgencyLevel, assignedTeam: string): string => {
+  const categoryReasons: Record<IssueCategory, string> = {
+    'Network Issue': 'Keyword analysis detected network-related terms such as "connection", "VPN", or "timeout".',
+    'Hardware Failure': 'Physical device symptoms identified including "flickering", "not responding", or hardware component references.',
+    'Software Bug': 'Application behavior anomalies detected such as "crashing", "freezing", or "error messages".',
+    'Access Request': 'Permission or access-related keywords found including "access", "permission", or "new employee".',
+    'Password Reset': 'Authentication failure patterns identified such as "password", "login", or "expired credentials".',
+    'Email Problem': 'Email system issues detected including "Outlook", "email", or "mail server" references.',
+    'VPN Issue': 'Remote connectivity problems identified through "VPN", "remote access", or "tunnel" keywords.',
+    'Printer Problem': 'Print system issues detected via "printer", "print job", or "print queue" references.',
+    'Security Incident': 'Security-related keywords triggered including "phishing", "suspicious", or "unauthorized access".',
+    'Performance Issue': 'System performance degradation indicators found such as "slow", "timeout", or "high usage".',
+  };
+
+  const urgencyReasons: Record<UrgencyLevel, string> = {
+    'Low': 'This is a non-blocking issue with no immediate business impact.',
+    'Normal': 'Standard priority assigned as this affects individual productivity but has workarounds available.',
+    'High': 'Elevated priority due to impact on multiple users or time-sensitive business operations.',
+    'Urgent': 'High priority assigned as this significantly impacts business operations or customer experience.',
+    'Critical': 'Maximum priority triggered due to security implications, widespread outage, or severe business impact.',
+  };
+
+  const teamReasons: Record<string, string> = {
+    'Network Ops': 'requires network infrastructure expertise and system-level access',
+    'Help Desk L1': 'is a standard support request suitable for first-level troubleshooting',
+    'Help Desk L2': 'requires elevated technical expertise and backend system access',
+    'Security Team': 'involves security protocols and requires incident response procedures',
+    'Infrastructure': 'needs server or infrastructure-level investigation and access',
+    'Application Support': 'requires application-specific debugging and configuration knowledge',
+  };
+
+  return `**Category Analysis:** ${categoryReasons[category]}
+
+**Urgency Assessment:** ${urgencyReasons[urgency]}
+
+**Team Assignment:** Routed to ${assignedTeam} because this issue ${teamReasons[assignedTeam] || 'matches their area of expertise'}.`;
+};
 
 export const generateMockTickets = (count: number = 25): Ticket[] => {
   return Array.from({ length: count }, (_, index) => {
@@ -82,6 +108,12 @@ export const generateMockTickets = (count: number = 25): Ticket[] => {
     
     const urgency = urgencies[Math.floor(Math.random() * urgencies.length)];
     const category = categories[Math.floor(Math.random() * categories.length)];
+    const assignedTeam = teams[Math.floor(Math.random() * teams.length)];
+    
+    // Determine feedback state: null = not given, true = correct, false = incorrect
+    const feedbackRandom = Math.random();
+    const feedbackProvided = feedbackRandom > 0.6;
+    const feedbackCorrect = feedbackProvided ? Math.random() > 0.3 : undefined;
     
     return {
       id: `TKT-${String(1000 + index).padStart(4, '0')}`,
@@ -90,16 +122,16 @@ export const generateMockTickets = (count: number = 25): Ticket[] => {
       status,
       urgency,
       category,
-      assignedTeam: teams[Math.floor(Math.random() * teams.length)],
+      assignedTeam,
       createdAt,
       updatedAt: new Date(createdAt.getTime() + Math.random() * 24 * 60 * 60 * 1000),
       resolvedAt,
       resolutionTimeHours: calculateResolutionTime(createdAt, resolvedAt),
-      aiExplanation: aiExplanations[Math.floor(Math.random() * aiExplanations.length)],
+      aiExplanation: generateAiExplanation(category, urgency, assignedTeam),
       aiConfidenceScore: Math.round(75 + Math.random() * 25),
-      routingDecision: `Routed to ${teams[Math.floor(Math.random() * teams.length)]} based on ${category.toLowerCase()} classification`,
-      feedbackProvided: Math.random() > 0.7,
-      feedbackCorrect: Math.random() > 0.3,
+      routingDecision: `Routed to ${assignedTeam}`,
+      feedbackProvided,
+      feedbackCorrect,
     };
   });
 };
