@@ -137,6 +137,7 @@ export const useTickets = () => {
     status?: string;
     source?: string;
     ticket_text?: string;
+    explanation?: string;
   }) => {
     const newTicket: Ticket = {
       id: ticketData.ticket_id,
@@ -149,8 +150,8 @@ export const useTickets = () => {
       assignedTeam: ticketData.assigned_team || '',
       createdAt: new Date(),
       updatedAt: new Date(),
-      aiExplanation: '',
-      aiConfidenceScore: 0,
+      aiExplanation: ticketData.explanation || '',
+      aiConfidenceScore: ticketData.explanation ? 85 : 0,
       routingDecision: ticketData.assigned_team ? `Routed to ${ticketData.assigned_team}` : '',
       feedbackProvided: false,
       feedbackCorrect: undefined,

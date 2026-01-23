@@ -39,6 +39,7 @@ interface WebhookResponse {
     status?: string;
     source?: string;
     ticket_text?: string;
+    explanation?: string;
   };
 }
 
@@ -333,6 +334,22 @@ export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmis
               </span>
             </div>
           </div>
+          
+          {/* AI Explanation Section */}
+          {submittedTicket.explanation && (
+            <div className="w-full max-w-md rounded-lg border border-primary/30 bg-primary/5 p-4 text-left space-y-3">
+              <div className="flex items-center gap-2 text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                  <path d="M12 2a8 8 0 0 0-8 8c0 3.36 2.07 6.24 5 7.42V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.58c2.93-1.18 5-4.06 5-7.42a8 8 0 0 0-8-8Z"/>
+                  <path d="M9.5 15h5"/>
+                </svg>
+                <h4 className="font-semibold">AI Explanation</h4>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {submittedTicket.explanation}
+              </p>
+            </div>
+          )}
           
           {/* Action Button */}
           <Button 

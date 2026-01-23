@@ -116,23 +116,44 @@ export const TicketDetailPanel = ({
             <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Routing Decision</p>
             <div className="flex items-center gap-2 p-3 rounded-lg bg-background/50 border border-border">
               <User className="h-4 w-4 text-primary" />
-              <span className="font-medium">{ticket.routingDecision}</span>
+              <span className="font-medium">Routed to {ticket.assignedTeam}</span>
             </div>
           </div>
 
-          {/* AI Explanation */}
-          <div className="space-y-2">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">AI Explanation</p>
-            <div className="p-3 rounded-lg bg-background/50 border border-border space-y-2">
-              {ticket.aiExplanation.split('\n\n').map((paragraph, idx) => (
-                <p key={idx} className="text-sm text-muted-foreground leading-relaxed">
-                  {paragraph.split('**').map((part, i) => 
-                    i % 2 === 1 ? <strong key={i} className="text-foreground">{part}</strong> : part
-                  )}
-                </p>
-              ))}
+          {/* Priority */}
+          {ticket.priority && (
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Priority</p>
+              <div className="p-3 rounded-lg bg-background/50 border border-border">
+                <Badge variant="outline" className={cn(
+                  'font-medium',
+                  ticket.priority === 'P1' ? "border-red-500/50 bg-red-500/10 text-red-600 dark:text-red-400" :
+                  ticket.priority === 'P2' ? "border-orange-500/50 bg-orange-500/10 text-orange-600 dark:text-orange-400" :
+                  ticket.priority === 'P3' ? "border-amber-500/50 bg-amber-500/10 text-amber-600 dark:text-amber-400" :
+                  ticket.priority === 'P4' ? "border-blue-500/50 bg-blue-500/10 text-blue-600 dark:text-blue-400" :
+                  "border-border"
+                )}>
+                  {ticket.priority}
+                </Badge>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* AI Explanation */}
+          {ticket.aiExplanation && (
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">AI Explanation</p>
+              <div className="p-3 rounded-lg bg-background/50 border border-border space-y-2">
+                {ticket.aiExplanation.split('\n\n').map((paragraph, idx) => (
+                  <p key={idx} className="text-sm text-muted-foreground leading-relaxed">
+                    {paragraph.split('**').map((part, i) => 
+                      i % 2 === 1 ? <strong key={i} className="text-foreground">{part}</strong> : part
+                    )}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
 
           <Separator className="bg-primary/20" />
 
