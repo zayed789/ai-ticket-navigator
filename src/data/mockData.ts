@@ -16,6 +16,7 @@ const calculateResolutionTime = (created: Date, resolved?: Date): number | undef
 
 const statuses: TicketStatus[] = ['Open', 'In Progress', 'Resolved', 'Closed'];
 const urgencies: UrgencyLevel[] = ['Low', 'Medium', 'High', 'Critical'];
+const priorities = ['P1', 'P2', 'P3', 'P4'] as const;
 const sources: TicketSource[] = ['Email', 'Chat', 'Web Form', 'IT Portal'];
 const categories: IssueCategory[] = [
   'Network Issue',
@@ -120,6 +121,7 @@ export const generateMockTickets = (count: number = 25): Ticket[] => {
       source: sources[Math.floor(Math.random() * sources.length)],
       status,
       urgency,
+      priority: priorities[Math.floor(Math.random() * priorities.length)],
       category,
       assignedTeam,
       createdAt,

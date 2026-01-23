@@ -99,6 +99,7 @@ export const useTickets = () => {
       source: source as Ticket['source'],
       status: 'Open',
       urgency,
+      priority: 'P3',
       category,
       assignedTeam,
       createdAt: new Date(),
@@ -131,6 +132,8 @@ export const useTickets = () => {
     ticket_id: string;
     category?: string;
     urgency?: string;
+    priority?: string;
+    assigned_team?: string;
     status?: string;
     source?: string;
     ticket_text?: string;
@@ -141,13 +144,14 @@ export const useTickets = () => {
       source: (ticketData.source as Ticket['source']) || 'Web Form',
       status: (ticketData.status as TicketStatus) || 'Open',
       urgency: (ticketData.urgency as Ticket['urgency']) || '',
+      priority: (ticketData.priority as Ticket['priority']) || '',
       category: ticketData.category || '',
-      assignedTeam: '',
+      assignedTeam: ticketData.assigned_team || '',
       createdAt: new Date(),
       updatedAt: new Date(),
       aiExplanation: '',
       aiConfidenceScore: 0,
-      routingDecision: '',
+      routingDecision: ticketData.assigned_team ? `Routed to ${ticketData.assigned_team}` : '',
       feedbackProvided: false,
       feedbackCorrect: undefined,
     };

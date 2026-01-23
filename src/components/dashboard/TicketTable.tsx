@@ -48,6 +48,7 @@ export const TicketTable = ({ tickets, onSelectTicket, selectedTicketId }: Ticke
             <TableHead className="text-muted-foreground font-medium">Ticket ID</TableHead>
             <TableHead className="text-muted-foreground font-medium">Category</TableHead>
             <TableHead className="text-muted-foreground font-medium">Urgency</TableHead>
+            <TableHead className="text-muted-foreground font-medium">Priority</TableHead>
             <TableHead className="text-muted-foreground font-medium">Assigned Team</TableHead>
             <TableHead className="text-muted-foreground font-medium">Status</TableHead>
             <TableHead className="text-muted-foreground font-medium">Created</TableHead>
@@ -68,23 +69,43 @@ export const TicketTable = ({ tickets, onSelectTicket, selectedTicketId }: Ticke
               </TableCell>
               <TableCell>{ticket.category}</TableCell>
               <TableCell>
-                <Badge 
-                  variant="outline" 
-                  className={cn('border font-medium', urgencyStyles[ticket.urgency])}
-                >
-                  {ticket.urgency}
-                </Badge>
+                {ticket.urgency ? (
+                  <Badge 
+                    variant="outline" 
+                    className={cn('border font-medium', urgencyStyles[ticket.urgency])}
+                  >
+                    {ticket.urgency}
+                  </Badge>
+                ) : null}
+              </TableCell>
+              <TableCell>
+                {ticket.priority ? (
+                  <Badge 
+                    variant="outline" 
+                    className={cn(
+                      'border font-medium',
+                      ticket.priority === 'P1' ? 'border-red-500 text-red-600 dark:text-red-400' :
+                      ticket.priority === 'P2' ? 'border-orange-500 text-orange-600 dark:text-orange-400' :
+                      ticket.priority === 'P3' ? 'border-amber-500 text-amber-600 dark:text-amber-400' :
+                      'border-blue-500 text-blue-600 dark:text-blue-400'
+                    )}
+                  >
+                    {ticket.priority}
+                  </Badge>
+                ) : null}
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {ticket.assignedTeam}
               </TableCell>
               <TableCell>
-                <Badge 
-                  variant="outline" 
-                  className={cn('border font-medium', statusStyles[ticket.status])}
-                >
-                  {ticket.status}
-                </Badge>
+                {ticket.status ? (
+                  <Badge 
+                    variant="outline" 
+                    className={cn('border font-medium', statusStyles[ticket.status])}
+                  >
+                    {ticket.status}
+                  </Badge>
+                ) : null}
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {formatDistanceToNow(ticket.createdAt, { addSuffix: true })}

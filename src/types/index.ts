@@ -1,5 +1,6 @@
 export type TicketStatus = 'Open' | 'In Progress' | 'Resolved' | 'Closed';
 export type UrgencyLevel = 'Low' | 'Medium' | 'High' | 'Critical';
+export type PriorityLevel = 'P1' | 'P2' | 'P3' | 'P4' | '';
 export type TicketSource = 'Email' | 'Chat' | 'Web Form' | 'IT Portal';
 export type IssueCategory = 
   | 'Network Issue'
@@ -19,6 +20,7 @@ export interface Ticket {
   source: TicketSource;
   status: TicketStatus;
   urgency: UrgencyLevel | '';
+  priority: PriorityLevel;
   category: IssueCategory | string;
   assignedTeam: string;
   createdAt: Date;
