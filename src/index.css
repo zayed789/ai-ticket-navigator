@@ -172,16 +172,12 @@
     @apply bg-muted text-muted-foreground;
   }
 
-  .urgency-normal {
+  .urgency-medium {
     @apply bg-info/20 text-info;
   }
 
   .urgency-high {
     @apply bg-warning/20 text-warning;
-  }
-
-  .urgency-urgent {
-    @apply bg-destructive/20 text-destructive;
   }
 
   .urgency-critical {

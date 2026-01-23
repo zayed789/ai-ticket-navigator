@@ -26,9 +26,8 @@ const statusStyles: Record<string, string> = {
 
 const urgencyStyles: Record<string, string> = {
   'Low': 'urgency-low',
-  'Normal': 'urgency-normal',
+  'Medium': 'urgency-medium',
   'High': 'urgency-high',
-  'Urgent': 'urgency-urgent',
   'Critical': 'urgency-critical',
 };
 

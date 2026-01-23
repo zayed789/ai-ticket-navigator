@@ -90,7 +90,7 @@ export const useTickets = () => {
 
   const submitTicket = useCallback(async (description: string, source: string) => {
     const category = 'Software Bug' as const;
-    const urgency = 'Normal' as const;
+    const urgency = 'Medium' as const;
     const assignedTeam = 'Help Desk L1';
     
     const newTicket: Ticket = {
