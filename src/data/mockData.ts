@@ -15,7 +15,7 @@ const calculateResolutionTime = (created: Date, resolved?: Date): number | undef
 };
 
 const statuses: TicketStatus[] = ['Open', 'In Progress', 'Resolved', 'Closed'];
-const urgencies: UrgencyLevel[] = ['Low', 'Normal', 'High', 'Urgent', 'Critical'];
+const urgencies: UrgencyLevel[] = ['Low', 'Medium', 'High', 'Critical'];
 const sources: TicketSource[] = ['Email', 'Chat', 'Web Form', 'IT Portal'];
 const categories: IssueCategory[] = [
   'Network Issue',
@@ -74,9 +74,8 @@ const generateAiExplanation = (category: IssueCategory, urgency: UrgencyLevel, a
 
   const urgencyReasons: Record<UrgencyLevel, string> = {
     'Low': 'This is a non-blocking issue with no immediate business impact.',
-    'Normal': 'Standard priority assigned as this affects individual productivity but has workarounds available.',
+    'Medium': 'Standard priority assigned as this affects individual productivity but has workarounds available.',
     'High': 'Elevated priority due to impact on multiple users or time-sensitive business operations.',
-    'Urgent': 'High priority assigned as this significantly impacts business operations or customer experience.',
     'Critical': 'Maximum priority triggered due to security implications, widespread outage, or severe business impact.',
   };
 

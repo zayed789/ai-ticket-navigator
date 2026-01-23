@@ -15,7 +15,7 @@ interface TicketFiltersBarProps {
 }
 
 const statuses: (TicketStatus | 'All')[] = ['All', 'Open', 'In Progress', 'Resolved', 'Closed'];
-const urgencies: (UrgencyLevel | 'All')[] = ['All', 'Low', 'Normal', 'High', 'Urgent', 'Critical'];
+const urgencies: (UrgencyLevel | 'All')[] = ['All', 'Low', 'Medium', 'High', 'Critical'];
 const timeRanges: TicketFilters['timeRange'][] = ['Today', 'Last 24h', 'Last 7 days', 'Last 30 days'];
 
 export const TicketFiltersBar = ({ filters, onFiltersChange }: TicketFiltersBarProps) => {

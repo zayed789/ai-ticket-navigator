@@ -49,9 +49,8 @@ const STATUS_COLORS: Record<TicketStatus, string> = {
 
 const URGENCY_COLORS: Record<UrgencyLevel, string> = {
   'Low': 'hsl(var(--chart-4))',
-  'Normal': 'hsl(var(--chart-5))',
+  'Medium': 'hsl(var(--chart-5))',
   'High': 'hsl(var(--chart-3))',
-  'Urgent': 'hsl(var(--chart-2))',
   'Critical': 'hsl(0, 75%, 55%)',
 };
 
@@ -86,7 +85,7 @@ export const TicketAnalyticsCharts = ({ tickets }: TicketAnalyticsChartsProps) =
 
   // Urgency distribution for bar chart
   const urgencyData = useMemo(() => {
-    const order: UrgencyLevel[] = ['Low', 'Normal', 'High', 'Urgent', 'Critical'];
+    const order: UrgencyLevel[] = ['Low', 'Medium', 'High', 'Critical'];
     const counts: Record<string, number> = {};
     tickets.forEach((ticket) => {
       counts[ticket.urgency] = (counts[ticket.urgency] || 0) + 1;

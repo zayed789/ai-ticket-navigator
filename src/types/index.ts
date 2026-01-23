@@ -1,5 +1,5 @@
 export type TicketStatus = 'Open' | 'In Progress' | 'Resolved' | 'Closed';
-export type UrgencyLevel = 'Low' | 'Normal' | 'High' | 'Urgent' | 'Critical';
+export type UrgencyLevel = 'Low' | 'Medium' | 'High' | 'Critical';
 export type TicketSource = 'Email' | 'Chat' | 'Web Form' | 'IT Portal';
 export type IssueCategory = 
   | 'Network Issue'
