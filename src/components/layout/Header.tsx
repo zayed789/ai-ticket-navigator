@@ -1,4 +1,4 @@
-import { LayoutDashboard, PlusCircle, Cpu, LogOut, UserPlus, LogIn } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Cpu, LogOut, UserPlus, LogIn, User } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -68,9 +68,16 @@ export const Header = ({ activeView, onViewChange }: HeaderProps) => {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <span className="hidden sm:block text-sm text-muted-foreground">
-                {user.email}
-              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/profile')}
+                className="gap-2"
+                title="View profile"
+              >
+                <User className="h-4 w-4" />
+                <span className="hidden sm:inline">{user.email}</span>
+              </Button>
               <ThemeToggle />
               <Button
                 variant="ghost"
