@@ -1,6 +1,9 @@
-import { Ticket, LayoutDashboard, PlusCircle, Settings, Bell, Cpu } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Cpu, LogOut } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   activeView: 'dashboard' | 'submit';
@@ -8,6 +11,14 @@ interface HeaderProps {
 }
 
 export const Header = ({ activeView, onViewChange }: HeaderProps) => {
+  const { signOut, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
@@ -53,7 +64,21 @@ export const Header = ({ activeView, onViewChange }: HeaderProps) => {
         </div>
 
         <div className="flex items-center gap-3">
+          {user && (
+            <span className="hidden sm:block text-sm text-muted-foreground">
+              {user.email}
+            </span>
+          )}
           <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            className="text-muted-foreground hover:text-foreground"
+            title="Sign out"
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </header>
