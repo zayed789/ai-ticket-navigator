@@ -1,4 +1,4 @@
-import { LayoutDashboard, PlusCircle, Cpu, LogOut } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Cpu, LogOut, UserPlus, LogIn } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,7 +16,7 @@ export const Header = ({ activeView, onViewChange }: HeaderProps) => {
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -48,37 +48,62 @@ export const Header = ({ activeView, onViewChange }: HeaderProps) => {
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
             </button>
-            <button
-              onClick={() => onViewChange('submit')}
-              className={cn(
-                'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
-                activeView === 'submit'
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              )}
-            >
-              <PlusCircle className="h-4 w-4" />
-              Submit Ticket
-            </button>
+            {user && (
+              <button
+                onClick={() => onViewChange('submit')}
+                className={cn(
+                  'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
+                  activeView === 'submit'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+              >
+                <PlusCircle className="h-4 w-4" />
+                Submit Ticket
+              </button>
+            )}
           </nav>
         </div>
 
         <div className="flex items-center gap-3">
-          {user && (
-            <span className="hidden sm:block text-sm text-muted-foreground">
-              {user.email}
-            </span>
+          {user ? (
+            <>
+              <span className="hidden sm:block text-sm text-muted-foreground">
+                {user.email}
+              </span>
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="text-muted-foreground hover:text-foreground"
+                title="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            <>
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/login')}
+                className="gap-2"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Login</span>
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => navigate('/signup')}
+                className="gap-2"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign Up</span>
+              </Button>
+            </>
           )}
-          <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleLogout}
-            className="text-muted-foreground hover:text-foreground"
-            title="Sign out"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
         </div>
       </div>
     </header>

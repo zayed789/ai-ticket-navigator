@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      tickets: {
+        Row: {
+          ai_confidence: number | null
+          ai_explanation: string | null
+          assigned_team: string | null
+          category: string | null
+          created_at: string
+          description: string
+          id: string
+          priority: string | null
+          resolved_at: string | null
+          source: string | null
+          status: string | null
+          subject: string | null
+          ticket_id: string
+          updated_at: string
+          urgency: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_confidence?: number | null
+          ai_explanation?: string | null
+          assigned_team?: string | null
+          category?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          priority?: string | null
+          resolved_at?: string | null
+          source?: string | null
+          status?: string | null
+          subject?: string | null
+          ticket_id: string
+          updated_at?: string
+          urgency?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_confidence?: number | null
+          ai_explanation?: string | null
+          assigned_team?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          priority?: string | null
+          resolved_at?: string | null
+          source?: string | null
+          status?: string | null
+          subject?: string | null
+          ticket_id?: string
+          updated_at?: string
+          urgency?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

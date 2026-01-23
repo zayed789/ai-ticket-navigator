@@ -6,11 +6,19 @@ import { TicketTable } from '@/components/dashboard/TicketTable';
 import { TicketFiltersBar } from '@/components/dashboard/TicketFiltersBar';
 import { TicketDetailPanel } from '@/components/dashboard/TicketDetailPanel';
 import { TicketSubmissionForm } from '@/components/dashboard/TicketSubmissionForm';
-import { useTickets } from '@/hooks/useTickets';
+import { useSupabaseTickets } from '@/hooks/useSupabaseTickets';
+import { useAuth } from '@/contexts/AuthContext';
 import { calculateDashboardStats } from '@/data/mockData';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { LogIn, UserPlus } from 'lucide-react';
 
 const Dashboard = () => {
   const [activeView, setActiveView] = useState<'dashboard' | 'submit'>('dashboard');
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  
   const {
     tickets,
     allTickets,
@@ -22,9 +30,43 @@ const Dashboard = () => {
     submitTicket,
     addTicketFromWebhook,
     provideFeedback,
-  } = useTickets();
+    loading: ticketsLoading,
+  } = useSupabaseTickets();
 
   const stats = calculateDashboardStats(allTickets);
+
+  // Show auth prompt for submit view if not logged in
+  if (activeView === 'submit' && !user && !authLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header activeView={activeView} onViewChange={setActiveView} />
+        
+        <main className="container py-12">
+          <Card className="max-w-md mx-auto">
+            <CardContent className="pt-6 text-center space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold">Sign in Required</h2>
+                <p className="text-muted-foreground">
+                  Please sign in or create an account to submit support tickets.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button onClick={() => navigate('/login')} variant="outline" className="gap-2">
+                  <LogIn className="h-4 w-4" />
+                  Login
+                </Button>
+                <Button onClick={() => navigate('/signup')} className="gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  Sign Up
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -59,14 +101,40 @@ const Dashboard = () => {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Recent Tickets</h2>
                 <span className="text-sm text-muted-foreground">
-                  Showing {tickets.length} of {allTickets.length} tickets
+                  {ticketsLoading ? (
+                    'Loading...'
+                  ) : user ? (
+                    `Showing ${tickets.length} of ${allTickets.length} tickets`
+                  ) : (
+                    'Sign in to view your tickets'
+                  )}
                 </span>
               </div>
-              <TicketTable 
-                tickets={tickets} 
-                onSelectTicket={setSelectedTicketId}
-                selectedTicketId={selectedTicket?.id || null}
-              />
+              {!user && !authLoading ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground mb-4">
+                      Sign in to view and manage your support tickets
+                    </p>
+                    <div className="flex gap-3 justify-center">
+                      <Button onClick={() => navigate('/login')} variant="outline" className="gap-2">
+                        <LogIn className="h-4 w-4" />
+                        Login
+                      </Button>
+                      <Button onClick={() => navigate('/signup')} className="gap-2">
+                        <UserPlus className="h-4 w-4" />
+                        Sign Up
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <TicketTable 
+                  tickets={tickets} 
+                  onSelectTicket={setSelectedTicketId}
+                  selectedTicketId={selectedTicket?.id || null}
+                />
+              )}
             </section>
           </>
         ) : (
