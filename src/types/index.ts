@@ -32,6 +32,7 @@ export interface Ticket {
   routingDecision: string;
   feedbackProvided: boolean;
   feedbackCorrect?: boolean; // undefined if not provided, true/false if feedback given
+  actions?: string[]; // AI-recommended actions/remediation steps
 }
 
 export interface DashboardStats {
