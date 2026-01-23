@@ -40,6 +40,7 @@ interface WebhookResponse {
     source?: string;
     ticket_text?: string;
     explanation?: string;
+    actions?: string[];
   };
 }
 
