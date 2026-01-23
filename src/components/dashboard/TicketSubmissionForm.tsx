@@ -15,7 +15,7 @@ import { TicketSource } from '@/types';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 
-const WEBHOOK_URL = 'https://zayedroxx.app.n8n.cloud/webhook/ticket/submit';
+const WEBHOOK_URL = 'https://zayedroxx.app.n8n.cloud/webhook-test/ticket/submit';
 
 interface WebhookPayload {
   source: TicketSource;
