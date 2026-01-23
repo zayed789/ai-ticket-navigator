@@ -28,8 +28,8 @@ export interface Ticket {
   aiExplanation: string;
   aiConfidenceScore: number;
   routingDecision: string;
-  feedbackProvided?: boolean;
-  feedbackCorrect?: boolean;
+  feedbackProvided: boolean;
+  feedbackCorrect?: boolean; // undefined if not provided, true/false if feedback given
 }
 
 export interface DashboardStats {
