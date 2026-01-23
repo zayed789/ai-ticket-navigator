@@ -18,8 +18,8 @@ export interface Ticket {
   description: string;
   source: TicketSource;
   status: TicketStatus;
-  urgency: UrgencyLevel;
-  category: IssueCategory;
+  urgency: UrgencyLevel | '';
+  category: IssueCategory | string;
   assignedTeam: string;
   createdAt: Date;
   updatedAt: Date;

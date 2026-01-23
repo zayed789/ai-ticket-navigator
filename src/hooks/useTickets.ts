@@ -130,6 +130,7 @@ export const useTickets = () => {
   const addTicketFromWebhook = useCallback((ticketData: {
     ticket_id: string;
     category?: string;
+    urgency?: string;
     status?: string;
     source?: string;
     ticket_text?: string;
@@ -139,8 +140,8 @@ export const useTickets = () => {
       description: ticketData.ticket_text || '',
       source: (ticketData.source as Ticket['source']) || 'Web Form',
       status: (ticketData.status as TicketStatus) || 'Open',
-      urgency: 'Normal',
-      category: (ticketData.category as Ticket['category']) || 'Software Bug',
+      urgency: (ticketData.urgency as Ticket['urgency']) || '',
+      category: ticketData.category || '',
       assignedTeam: '',
       createdAt: new Date(),
       updatedAt: new Date(),
