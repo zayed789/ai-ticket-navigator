@@ -220,14 +220,20 @@ export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmis
         throw new Error(`Webhook returned ${response.status}`);
       }
 
-      const data: WebhookResponse = await response.json();
+      const rawData = await response.json();
+      
+      // Handle both array and object response formats
+      const data: WebhookResponse = Array.isArray(rawData) ? rawData[0] : rawData;
+      
+      // Extract ticket data as plain values
+      const ticketData = data.ticket;
       
       // Set the submitted ticket for confirmation display
-      setSubmittedTicket(data.ticket);
+      setSubmittedTicket(ticketData);
       
       // Notify parent about the new ticket
-      if (onTicketCreated && data.ticket) {
-        onTicketCreated(data.ticket);
+      if (onTicketCreated && ticketData) {
+        onTicketCreated(ticketData);
       }
       
       toast({
