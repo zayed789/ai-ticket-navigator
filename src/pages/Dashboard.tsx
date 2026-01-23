@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { MetricsGrid } from '@/components/dashboard/MetricsGrid';
+import { TicketAnalyticsCharts } from '@/components/dashboard/TicketAnalyticsCharts';
 import { TicketTable } from '@/components/dashboard/TicketTable';
 import { TicketFiltersBar } from '@/components/dashboard/TicketFiltersBar';
 import { TicketDetailPanel } from '@/components/dashboard/TicketDetailPanel';
@@ -36,13 +37,24 @@ const Dashboard = () => {
               <MetricsGrid stats={stats} />
             </section>
 
-            {/* Filters */}
+            {/* Analytics Charts */}
             <section className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-xl font-semibold">Live Analytics</h2>
+                <span className="text-xs text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full">
+                  Real-time
+                </span>
+              </div>
+              <TicketAnalyticsCharts tickets={allTickets} />
+            </section>
+
+            {/* Filters */}
+            <section className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <TicketFiltersBar filters={filters} onFiltersChange={setFilters} />
             </section>
 
             {/* Ticket Table */}
-            <section className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <section className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Recent Tickets</h2>
                 <span className="text-sm text-muted-foreground">
