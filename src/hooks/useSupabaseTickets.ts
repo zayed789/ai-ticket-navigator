@@ -23,7 +23,7 @@ interface DbTicket {
   resolved_at: string | null;
 }
 
-const mapDbToTicket = (db: DbTicket): Ticket => ({
+const mapDbToTicket = (db: DbTicket, actions?: string[]): Ticket => ({
   id: db.ticket_id,
   description: db.description,
   source: (db.source as Ticket['source']) || 'Web Form',
@@ -40,6 +40,7 @@ const mapDbToTicket = (db: DbTicket): Ticket => ({
   routingDecision: db.assigned_team ? `Routed to ${db.assigned_team}` : '',
   feedbackProvided: false,
   feedbackCorrect: undefined,
+  actions: actions || undefined,
 });
 
 export const useSupabaseTickets = () => {
@@ -71,7 +72,7 @@ export const useSupabaseTickets = () => {
 
       if (error) throw error;
 
-      const mappedTickets = (data as DbTicket[]).map(mapDbToTicket);
+      const mappedTickets = (data as DbTicket[]).map(db => mapDbToTicket(db));
       setTickets(mappedTickets);
     } catch (error) {
       console.error('Error fetching tickets:', error);
@@ -249,6 +250,7 @@ export const useSupabaseTickets = () => {
     source?: string;
     ticket_text?: string;
     explanation?: string;
+    actions?: string[];
   }) => {
     if (!user) return;
 
@@ -273,7 +275,7 @@ export const useSupabaseTickets = () => {
 
       if (error) throw error;
 
-      const newTicket = mapDbToTicket(data as DbTicket);
+      const newTicket = mapDbToTicket(data as DbTicket, ticketData.actions);
       setTickets(prev => [newTicket, ...prev]);
     } catch (error) {
       console.error('Error adding ticket from webhook:', error);
