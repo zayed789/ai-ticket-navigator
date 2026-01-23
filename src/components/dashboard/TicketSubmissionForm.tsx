@@ -13,6 +13,21 @@ import {
 } from '@/components/ui/select';
 import { TicketSource } from '@/types';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
+
+const WEBHOOK_URL = 'https://zayedroxx.app.n8n.cloud/webhook-test/ticket/submit';
+
+interface WebhookPayload {
+  source: TicketSource;
+  ticket_text: string;
+  metadata: {
+    email: Record<string, string>;
+    chat: { messages?: { sender: string; text: string }[] };
+    web_form: Record<string, string>;
+    it_portal: Record<string, string>;
+  };
+  submitted_at: string;
+}
 
 interface TicketSubmissionFormProps {
   onSubmit: (description: string, source: string, metadata?: Record<string, unknown>) => Promise<unknown>;
@@ -103,49 +118,109 @@ export const TicketSubmissionForm = ({ onSubmit }: TicketSubmissionFormProps) =>
     }, 500);
   };
 
-  const getTicketData = (): { description: string; metadata: Record<string, unknown> } | null => {
+  const buildWebhookPayload = (): WebhookPayload | null => {
+    const basePayload: WebhookPayload = {
+      source,
+      ticket_text: '',
+      metadata: {
+        email: {},
+        chat: {},
+        web_form: {},
+        it_portal: {},
+      },
+      submitted_at: new Date().toISOString(),
+    };
+
     switch (source) {
       case 'Email':
         if (!emailFrom || !emailSubject || !emailBody) return null;
-        return {
-          description: `Subject: ${emailSubject}\n\n${emailBody}`,
-          metadata: { from: emailFrom, to: emailTo, cc: emailCc, subject: emailSubject }
+        basePayload.ticket_text = `${emailSubject} — ${emailBody}`;
+        basePayload.metadata.email = {
+          from: emailFrom,
+          to: emailTo,
+          cc: emailCc,
+          subject: emailSubject,
+          body: emailBody,
         };
+        break;
+
       case 'Chat':
         const userMessages = chatMessages.filter(m => m.isUser);
         if (userMessages.length === 0) return null;
-        return {
-          description: userMessages.map(m => m.text).join('\n'),
-          metadata: { chatLog: chatMessages.map(m => ({ text: m.text, isUser: m.isUser, timestamp: m.timestamp })) }
+        basePayload.ticket_text = userMessages.map(m => m.text).join(' ');
+        basePayload.metadata.chat = {
+          messages: userMessages.map(m => ({ sender: 'user', text: m.text })),
         };
+        break;
+
       case 'Web Form':
         if (!webName || !webEmail || !webTitle || !webDescription) return null;
-        return {
-          description: `${webTitle}\n\n${webDescription}`,
-          metadata: { name: webName, email: webEmail, title: webTitle }
+        basePayload.ticket_text = `${webTitle} — ${webDescription}`;
+        basePayload.metadata.web_form = {
+          name: webName,
+          email: webEmail,
+          issue_title: webTitle,
+          issue_description: webDescription,
         };
+        break;
+
       case 'IT Portal':
         if (!itEmployeeId || !itDepartment || !itIssueType || !itImpactLevel || !itDescription) return null;
-        return {
-          description: `[${itIssueType}] ${itDescription}`,
-          metadata: { employeeId: itEmployeeId, department: itDepartment, issueType: itIssueType, impactLevel: itImpactLevel }
+        basePayload.ticket_text = `${itIssueType} — ${itDescription}`;
+        basePayload.metadata.it_portal = {
+          employee_id: itEmployeeId,
+          department: itDepartment,
+          issue_type: itIssueType,
+          impact_level: itImpactLevel,
+          description: itDescription,
         };
+        break;
+
       default:
         return null;
     }
+
+    return basePayload;
   };
 
-  const isFormValid = () => getTicketData() !== null;
+  const isFormValid = () => buildWebhookPayload() !== null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ticketData = getTicketData();
-    if (!ticketData) return;
+    const payload = buildWebhookPayload();
+    if (!payload) return;
 
     setIsSubmitting(true);
     try {
-      await onSubmit(ticketData.description, source, ticketData.metadata);
+      // Send to webhook
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Webhook returned ${response.status}`);
+      }
+
+      // Also call local onSubmit for UI update
+      await onSubmit(payload.ticket_text, source, payload.metadata);
+      
+      toast({
+        title: 'Ticket Submitted Successfully',
+        description: `Your ${source} ticket has been sent to the processing queue.`,
+      });
+      
       resetAllFields();
+    } catch (error) {
+      console.error('Webhook submission error:', error);
+      toast({
+        title: 'Submission Failed',
+        description: 'Failed to submit ticket to webhook. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }
