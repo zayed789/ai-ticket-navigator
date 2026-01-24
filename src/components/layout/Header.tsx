@@ -1,4 +1,4 @@
-import { LayoutDashboard, PlusCircle, Cpu, LogOut, UserPlus, LogIn, User } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, Cpu, LogOut, UserPlus, LogIn, User, Home } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,6 +36,13 @@ export const Header = ({ activeView, onViewChange }: HeaderProps) => {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-1">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </button>
             <button
               onClick={() => onViewChange('dashboard')}
               className={cn(
