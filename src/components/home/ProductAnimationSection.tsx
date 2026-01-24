@@ -1,22 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Phone, Mail, Globe, Headphones, MessageSquare, ArrowRight, Radio } from 'lucide-react';
+import { Mail, Globe, Ticket, FileText, ArrowRight, Layers } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const channels = [
-  { icon: Phone, label: 'Voice' },
   { icon: Mail, label: 'Email' },
   { icon: Globe, label: 'Web Portal' },
-  { icon: Headphones, label: 'Call Center' },
-  { icon: MessageSquare, label: 'Chat' },
+  { icon: Ticket, label: 'IT Ticket' },
+  { icon: FileText, label: 'Web Form' },
 ];
 
 const ticketStates = [
-  { step: 'Incoming Call', status: 'receiving', category: '', urgency: '', team: '' },
-  { step: 'Call Connected', status: 'connected', category: '', urgency: '', team: '' },
-  { step: 'Creating Ticket', status: 'creating', category: 'Network Issue', urgency: '', team: '' },
-  { step: 'AI Analysis', status: 'analyzing', category: 'Network Issue', urgency: 'P2 - High', team: '' },
-  { step: 'Auto-Routed', status: 'routed', category: 'Network Issue', urgency: 'P2 - High', team: 'Network Ops' },
+  { step: 'New Email Received', status: 'receiving', category: '', urgency: '', team: '', icon: Mail },
+  { step: 'Form Submitted', status: 'connected', category: '', urgency: '', team: '', icon: FileText },
+  { step: 'Creating Ticket', status: 'creating', category: 'Network Issue', urgency: '', team: '', icon: Ticket },
+  { step: 'AI Analysis', status: 'analyzing', category: 'Network Issue', urgency: 'P2 - High', team: '', icon: Ticket },
+  { step: 'Auto-Routed', status: 'routed', category: 'Network Issue', urgency: 'P2 - High', team: 'Network Ops', icon: Ticket },
 ];
 
 export const ProductAnimationSection = () => {
@@ -64,12 +63,12 @@ export const ProductAnimationSection = () => {
                     {/* App Header */}
                     <div className="text-center space-y-1">
                       <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-primary/10 text-primary mx-auto">
-                        <Phone className="h-8 w-8" />
+                        <currentState.icon className="h-8 w-8" />
                       </div>
                       <p className="text-lg font-semibold">{currentState.step}</p>
                     </div>
 
-                    {/* Call Animation */}
+                    {/* Ticket Animation */}
                     <div className="flex justify-center">
                       <div className="relative">
                         {currentState.status === 'receiving' && (
@@ -83,7 +82,7 @@ export const ProductAnimationSection = () => {
                           currentState.status === 'connected' ? 'bg-primary text-primary-foreground' :
                           'bg-info text-info-foreground'
                         }`}>
-                          <Phone className="h-8 w-8" />
+                          <currentState.icon className="h-8 w-8" />
                         </div>
                       </div>
                     </div>
@@ -131,7 +130,7 @@ export const ProductAnimationSection = () => {
 
               {/* Floating Channel Icons */}
               {channels.map((channel, index) => {
-                const angle = (index * 72 - 90) * (Math.PI / 180);
+                const angle = (index * 90 - 45) * (Math.PI / 180);
                 const radius = 180;
                 const x = Math.cos(angle) * radius;
                 const y = Math.sin(angle) * radius;
@@ -156,8 +155,8 @@ export const ProductAnimationSection = () => {
           {/* Right Side - Content */}
           <div className="space-y-6 order-1 lg:order-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <Radio className="h-4 w-4" />
-              Omnichannel Support
+              <Layers className="h-4 w-4" />
+              Multi-Channel Support
             </div>
 
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
@@ -166,7 +165,7 @@ export const ProductAnimationSection = () => {
             </h2>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-              Support customers via Email, Web Forms, IT Portals, Calls, and Voice — 
+              Support customers via Email, Web Forms, and IT Portals — 
               all tracked in one unified system. AI automatically creates, categorizes, 
               and routes tickets in real-time.
             </p>
@@ -193,7 +192,7 @@ export const ProductAnimationSection = () => {
               onClick={() => navigate('/dashboard')}
               className="group"
             >
-              Try Voice Support
+              Visit Dashboard
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
