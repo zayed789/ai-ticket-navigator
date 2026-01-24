@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Send, Mail, MessageCircle, Globe, Monitor, Plus, CheckCircle, ArrowLeft } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Send, Mail, MessageCircle, Globe, Monitor, Plus, CheckCircle, ArrowLeft, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +14,7 @@ import {
 import { TicketSource } from '@/types';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import { validateTicketDescription, validateChatMessages } from '@/hooks/useTicketDescriptionValidation';
 
 const WEBHOOK_URL = 'https://zayedroxx.app.n8n.cloud/webhook-test/ticket/submit';
 
@@ -200,7 +201,23 @@ export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmis
     return basePayload;
   };
 
-  const isFormValid = () => buildWebhookPayload() !== null;
+  // Description validation based on current source
+  const descriptionValidation = useMemo(() => {
+    switch (source) {
+      case 'Email':
+        return validateTicketDescription(emailBody);
+      case 'Chat':
+        return validateChatMessages(chatMessages);
+      case 'Web Form':
+        return validateTicketDescription(webDescription);
+      case 'IT Portal':
+        return validateTicketDescription(itDescription);
+      default:
+        return { isValid: false, errorMessage: null };
+    }
+  }, [source, emailBody, chatMessages, webDescription, itDescription]);
+
+  const isFormValid = () => buildWebhookPayload() !== null && descriptionValidation.isValid;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -452,8 +469,17 @@ export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmis
                 placeholder="Describe your issue in detail..."
                 value={emailBody}
                 onChange={(e) => setEmailBody(e.target.value)}
-                className="min-h-[150px] bg-background resize-none"
+                className={cn(
+                  "min-h-[150px] bg-background resize-none",
+                  descriptionValidation.errorMessage && source === 'Email' && "border-destructive focus-visible:ring-destructive"
+                )}
               />
+              {descriptionValidation.errorMessage && source === 'Email' && (
+                <p className="flex items-center gap-1.5 text-sm text-destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  {descriptionValidation.errorMessage}
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -499,6 +525,12 @@ export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmis
             <p className="text-xs text-muted-foreground">
               Add your messages, then submit to create a ticket from the conversation.
             </p>
+            {descriptionValidation.errorMessage && source === 'Chat' && (
+              <p className="flex items-center gap-1.5 text-sm text-destructive">
+                <AlertCircle className="h-4 w-4" />
+                {descriptionValidation.errorMessage}
+              </p>
+            )}
           </div>
         )}
 
@@ -552,8 +584,17 @@ export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmis
                 placeholder="Provide a detailed description of your issue..."
                 value={webDescription}
                 onChange={(e) => setWebDescription(e.target.value)}
-                className="min-h-[120px] bg-background resize-none"
+                className={cn(
+                  "min-h-[120px] bg-background resize-none",
+                  descriptionValidation.errorMessage && source === 'Web Form' && "border-destructive focus-visible:ring-destructive"
+                )}
               />
+              {descriptionValidation.errorMessage && source === 'Web Form' && (
+                <p className="flex items-center gap-1.5 text-sm text-destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  {descriptionValidation.errorMessage}
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -634,8 +675,17 @@ export const TicketSubmissionForm = ({ onSubmit, onTicketCreated }: TicketSubmis
                 placeholder="Describe your IT issue in detail..."
                 value={itDescription}
                 onChange={(e) => setItDescription(e.target.value)}
-                className="min-h-[120px] bg-background resize-none"
+                className={cn(
+                  "min-h-[120px] bg-background resize-none",
+                  descriptionValidation.errorMessage && source === 'IT Portal' && "border-destructive focus-visible:ring-destructive"
+                )}
               />
+              {descriptionValidation.errorMessage && source === 'IT Portal' && (
+                <p className="flex items-center gap-1.5 text-sm text-destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  {descriptionValidation.errorMessage}
+                </p>
+              )}
             </div>
           </div>
         )}
