@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Monitor } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const HeroSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <section className="relative overflow-hidden bg-muted/30 dark:bg-background">
@@ -34,14 +36,16 @@ export const HeroSection = () => {
                 Dashboard
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                onClick={() => navigate('/signup')}
-                className="text-base px-8 h-12 border-2"
-              >
-                Sign Up
-              </Button>
+              {!user && (
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => navigate('/signup')}
+                  className="text-base px-8 h-12 border-2"
+                >
+                  Sign Up
+                </Button>
+              )}
             </div>
 
             {/* Trust Badges */}
