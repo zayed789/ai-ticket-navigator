@@ -1,73 +1,69 @@
-# Welcome to your Lovable project
+ 🚀 AI Ticketing System with Intelligent Routing (Workflow-Based)
+📌 Overview
 
-## Project info
+An AI-powered ticketing and intelligent routing system built using no-code/low-code automation tools. The system automates ticket classification, prioritization, and routing using LLMs and workflow orchestration, eliminating the need for manual triaging.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Designed to simulate real-world support pipelines, this project focuses on AI-driven decision-making and automation workflows rather than traditional backend-heavy implementation.
 
-## How can I edit this code?
+⚡ Key Features
+🧠 LLM-Based Ticket Understanding
+Uses AI APIs to extract:
+Intent
+Issue category
+Priority level
+🔄 Workflow Automation (n8n)
+End-to-end pipeline from ticket input → routing → output
+🎯 Dynamic Routing Logic
+Routes tickets based on:
+AI output
+Predefined business rules
+⚡ No-Code/Low-Code Architecture
+Built entirely using automation pipelines (no heavy backend)
+🔌 API/Webhook Integration
+Accepts ticket input via webhook endpoints
+🏗️ Workflow Architecture
+Ticket Input (Webhook / Form)
+        ↓
+n8n Workflow Trigger
+        ↓
+AI Processing Node (LLM API)
+        ↓
+Structured Output Parsing
+        ↓
+Routing Logic (IF / Switch Nodes)
+        ↓
+Assignment (Team / Category)
+        ↓
+Notification / Storage
+🛠️ Tech Stack
+Automation: n8n
+AI: OpenAI API / LLM APIs
+Interface: Lovable (Frontend for ticket input)
+Integration: Webhooks / REST APIs
+Data Handling: JSON-based processing
+🧠 How It Works
+User submits a ticket through Lovable UI or webhook
+n8n workflow is triggered
+Ticket content is sent to LLM API
+AI returns structured output:
+Category
+Priority
+Intent
+Workflow applies routing logic:
+IF billing → Finance team
+IF technical → Engineering
+Ticket is assigned and logged
+🔥 Example
 
-There are several ways of editing your application.
+Input:
 
-**Use Lovable**
+“My account was charged twice and I need a refund immediately.”
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+AI Output:
 
-Changes made via Lovable will be committed automatically to this repo.
+Category: Billing
+Priority: High
+Sentiment: Negative
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Routing Result:
+→ Assigned to Finance Support Team
