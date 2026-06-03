@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { validateTicketDescription, validateChatMessages } from '@/hooks/useTicketDescriptionValidation';
 
-const WEBHOOK_URL = 'https://zayedroxx.app.n8n.cloud/webhook-test/ticket/submit';
+const WEBHOOK_URL = 'https://bababade.app.n8n.cloud/webhook-test/ticket/submit';
 
 interface WebhookPayload {
   source: TicketSource;
